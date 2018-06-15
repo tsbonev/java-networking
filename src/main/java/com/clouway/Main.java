@@ -6,8 +6,7 @@ import com.clouway.clientserver.Server;
 
 public class Main {
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws InterruptedException {
 
         Client client = new Client("localhost", 4444);
         Server server = new Server(4444);

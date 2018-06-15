@@ -10,7 +10,7 @@ public class ClientServer {
         this.server = server;
     }
 
-    public void start(){
+    public void start() throws InterruptedException {
 
         FramePackage framePackage = SetupFrame.setupFrame();
 
@@ -21,6 +21,7 @@ public class ClientServer {
         Thread serverThread = new Thread(server);
 
         serverThread.start();
+        Thread.currentThread().sleep(50);
         clientThread.start();
 
 
