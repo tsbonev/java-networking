@@ -7,12 +7,11 @@ import static org.hamcrest.CoreMatchers.is;
 
 public class ClientServerTest {
 
-    ClientServer cs = new ClientServer();
 
     @Test
-    public void startClient(){
+    public void startClientAndServer(){
 
-        cs.startClient("localhost", 4444);
+        assertThat("I don't know what to test", is(true));
 
     }
 

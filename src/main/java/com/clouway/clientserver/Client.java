@@ -7,37 +7,35 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class Client {
-
-    public static void main(String[] args){
-
-
-        JFrame frame = new JFrame();
-        frame.setSize(500, 500);
-        frame.setLocation(0, 0);
+@SuppressWarnings("Duplicates")
+public class Client implements Runnable{
 
 
-        JPanel panel = new JPanel();
-        JTextArea text = new JTextArea(20, 20);
-        text.setEditable(false);
-        panel.add(text);
+    private int port;
+    private String host;
+    private JFrame frame;
+    private JTextArea text;
 
-        frame.getContentPane().add(panel);
+    public Client(int port, String host) {
+        this.port = port;
+        this.host = host;
+    }
 
-        text.append("Client started\n");
+    public void setFrame(JFrame frame, JTextArea text){
+        this.frame = frame;
+        this.text = text;
+    }
 
-        frame.pack();
-        frame.setVisible(true);
+    @Override
+    public void run() {
 
-        int port = Integer.parseInt(args[1]);
-        String host = args[0];
-
+        text.append("Started client\n");
 
         try(
                 Socket socket = new Socket(host, port);
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(socket.getInputStream()))
-                ) {
+        ) {
 
             text.append("Connected to server\n");
             String fromServer;
@@ -58,7 +56,6 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 }

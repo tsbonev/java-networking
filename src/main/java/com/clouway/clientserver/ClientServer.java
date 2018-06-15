@@ -1,14 +1,6 @@
 package com.clouway.clientserver;
 
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.time.LocalDate;
 
 @SuppressWarnings("Duplicates")
 public class ClientServer {
@@ -17,21 +9,36 @@ public class ClientServer {
     private JPanel panel;
     private JTextArea text;
 
+    private Client client;
+    private Server server;
+
+    public ClientServer(Client client, Server server) {
+        this.client = client;
+        this.server = server;
+    }
+
     public void start(){
 
-        startServer(4444);
+        openFrame();
 
-        startClient("localhost", 4444);
+        client.setFrame(frame, text);
+        server.setFrame(frame, text);
+
+        Thread clientThread = new Thread(client);
+        Thread serverThread = new Thread(server);
+
+        serverThread.start();
+        clientThread.start();
+
+
     }
 
     public void openFrame(){
 
-        if(frame != null) return;
-
         frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500, 500);
         frame.setLocation(0, 0);
-
 
         panel = new JPanel();
         text = new JTextArea(20, 20);
@@ -40,77 +47,8 @@ public class ClientServer {
 
         frame.getContentPane().add(panel);
 
-
         frame.pack();
         frame.setVisible(true);
-
-    }
-
-
-    public void startServer(int port){
-
-        openFrame();
-
-        text.append("Server started\n");
-
-        (new Thread(() -> {
-            try(
-                    ServerSocket serverSocket = new ServerSocket(port);
-                    Socket clientSocket = serverSocket.accept();
-                    PrintWriter out =
-                            new PrintWriter(clientSocket.getOutputStream(), true)
-            ) {
-                text.append("Socket connected\n");
-                String outputLine = "Hello, " + LocalDate.now();
-
-                out.write(outputLine);
-                text.append("Message sent\n");
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            text.append("Server closed\n");
-
-        })).start();
-
-    }
-
-    public void startClient(String host, int port){
-
-        openFrame();
-
-        text.append("Client started\n");
-
-        (new Thread(() -> {
-
-            try(
-                    Socket socket = new Socket(host, port);
-                    BufferedReader in = new BufferedReader(
-                            new InputStreamReader(socket.getInputStream()))
-            ) {
-
-                text.append("Connected to server\n");
-                String fromServer;
-
-                while ((fromServer =  in.readLine()) != null){
-                    text.append("Received message from server\n");
-                    System.out.println(fromServer);
-                    text.append("Printed message to console\n");
-
-                    break;
-                }
-
-                System.out.println("Closing connection");
-                text.append("Client closed");
-
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        })).start();
 
     }
 

@@ -7,35 +7,32 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDate;
 
-public class Server {
+@SuppressWarnings("Duplicates")
+public class Server implements Runnable{
 
-    public static void main(String[] args){
+    private int port;
+    private JFrame frame;
+    private JTextArea text;
 
+    public Server(int port) {
+        this.port = port;
+    }
 
-        JFrame frame = new JFrame();
-        frame.setSize(500, 500);
-        frame.setLocation(0, 0);
+    public void setFrame(JFrame frame, JTextArea text){
+        this.frame = frame;
+        this.text = text;
+    }
 
+    @Override
+    public void run() {
 
-        JPanel panel = new JPanel();
-        JTextArea text = new JTextArea(20, 20);
-        text.setEditable(false);
-        panel.add(text);
-
-        frame.getContentPane().add(panel);
-
-        text.append("Server started\n");
-
-        frame.pack();
-        frame.setVisible(true);
-
-        int port = Integer.parseInt(args[0]);
+        text.append("Started server\n");
 
         try(
                 ServerSocket serverSocket = new ServerSocket(port);
                 Socket clientSocket = serverSocket.accept();
                 PrintWriter out =
-                new PrintWriter(clientSocket.getOutputStream(), true)
+                        new PrintWriter(clientSocket.getOutputStream(), true)
 
         ) {
 
@@ -52,7 +49,6 @@ public class Server {
         text.append("Server closed\n");
 
     }
-
 
 
 }
