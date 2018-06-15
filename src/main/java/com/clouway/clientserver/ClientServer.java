@@ -1,6 +1,5 @@
 package com.clouway.clientserver;
 
-@SuppressWarnings("Duplicates")
 public class ClientServer {
 
     private Client client;

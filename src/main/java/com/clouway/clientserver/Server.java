@@ -7,7 +7,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDate;
 
-@SuppressWarnings("Duplicates")
 public class Server implements Runnable{
 
     private int port;

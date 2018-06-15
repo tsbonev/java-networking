@@ -2,7 +2,6 @@ package com.clouway.clientserver;
 
 import javax.swing.*;
 
-@SuppressWarnings("Duplicates")
 public class SetupFrame {
 
     public static FramePackage setupFrame(){

@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-@SuppressWarnings("Duplicates")
 public class Client implements Runnable{
 
 
