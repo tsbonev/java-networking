@@ -19,6 +19,15 @@ public class ClientServer {
 
     public void start(){
 
+        startServer(4444);
+
+        startClient("localhost", 4444);
+    }
+
+    public void openFrame(){
+
+        if(frame != null) return;
+
         frame = new JFrame();
         frame.setSize(500, 500);
         frame.setLocation(0, 0);
@@ -35,17 +44,14 @@ public class ClientServer {
         frame.pack();
         frame.setVisible(true);
 
-
-        startServer(4444);
-        text.append("Server started\n");
-
-        startClient("localhost", 4444);
-        text.append("Client started\n");
-
     }
 
 
     public void startServer(int port){
+
+        openFrame();
+
+        text.append("Server started\n");
 
         (new Thread(() -> {
             try(
@@ -71,6 +77,10 @@ public class ClientServer {
     }
 
     public void startClient(String host, int port){
+
+        openFrame();
+
+        text.append("Client started\n");
 
         (new Thread(() -> {
 
