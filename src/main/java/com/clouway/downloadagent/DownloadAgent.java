@@ -40,11 +40,11 @@ public class DownloadAgent {
 
     }
 
-    public File download() throws IOException {
+    public File downloadFile(int connectionTimeout, int readTimeout) throws IOException {
 
-        File downloadedFile = new File("/home/clouway/workspaces/idea/networking/src/test/resources/download.txt");
+        File downloadedFile = new File("src/test/resources/download.txt");
 
-        FileUtils.copyURLToFile(url, downloadedFile);
+        FileUtils.copyURLToFile(url, downloadedFile, connectionTimeout, readTimeout);
 
         return downloadedFile;
     }

@@ -6,7 +6,6 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,7 +39,7 @@ public class DownloadAgentTest {
     }
 
     @Test (expected = MalformedURLException.class)
-    public void rejectInvalidUrlObject() throws MalformedURLException, URISyntaxException {
+    public void rejectInvalidUrlObject() throws MalformedURLException {
 
         URL url = null;
 
@@ -69,14 +68,16 @@ public class DownloadAgentTest {
     @Test
     public void downloadFile() throws IOException {
 
-        File file = new File("/home/clouway/workspaces/idea/networking/src/test/resources/text.txt");
+        File file = new File("src/test/resources/text.txt");
 
         agent.setUrl(file);
 
-        File download = agent.download();
+        File download = agent.downloadFile(10000, 10000);
 
         assertThat(FileUtils.contentEquals(file, download), is(true));
 
+        //така и начина по - който прогреса се обновява.
+        //ask what this entails
 
     }
 
