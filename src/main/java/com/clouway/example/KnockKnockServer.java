@@ -1,4 +1,4 @@
-package com.clouway.clientserver;
+package com.clouway.example;
 
 import java.net.*;
 import java.io.*;

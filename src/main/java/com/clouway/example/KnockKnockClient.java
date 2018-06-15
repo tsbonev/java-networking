@@ -1,4 +1,4 @@
-package com.clouway.clientserver;
+package com.clouway.example;
 
 import java.io.BufferedReader;
 import java.io.IOException;
