@@ -1,6 +1,9 @@
 package com.clouway.clientserver;
 
 public class KnockKnockProtocol {
+
+    //Decided what jokes to send and when to send them
+
     private static final int WAITING = 0;
     private static final int SENTKNOCKKNOCK = 1;
     private static final int SENTCLUE = 2;

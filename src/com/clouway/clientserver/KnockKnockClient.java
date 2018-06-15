@@ -22,24 +22,38 @@ public class KnockKnockClient {
 
         try (
                 Socket kkSocket = new Socket(hostName, portNumber);
+                //We create a socket connected to a host with a port
+
                 PrintWriter out = new PrintWriter(kkSocket.getOutputStream(), true);
+                //We open a stream writer
                 BufferedReader in = new BufferedReader(
-                        new InputStreamReader(kkSocket.getInputStream()));
+                        new InputStreamReader(kkSocket.getInputStream()))
+                //We open a buffered reader
         ) {
             BufferedReader stdIn =
                     new BufferedReader(new InputStreamReader(System.in));
+            //We open a reader for the console
+
             String fromServer;
             String fromUser;
+            //Define two holder variables
 
             while ((fromServer = in.readLine()) != null) {
+                //While the server is sending, print
                 System.out.println("Server: " + fromServer);
                 if (fromServer.equals("Bye."))
+                    //If the server sends us "Bye." end
                     break;
 
                 fromUser = stdIn.readLine();
+                //read our line from the console
+
                 if (fromUser != null) {
+                    //if it isnt empty
                     System.out.println("Client: " + fromUser);
+                    //print it
                     out.println(fromUser);
+                    //send it to the server
                 }
             }
         } catch (UnknownHostException e) {
