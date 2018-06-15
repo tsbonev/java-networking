@@ -11,15 +11,13 @@ import java.time.LocalDate;
 public class Server implements Runnable{
 
     private int port;
-    private JFrame frame;
     private JTextArea text;
 
     public Server(int port) {
         this.port = port;
     }
 
-    public void setFrame(JFrame frame, JTextArea text){
-        this.frame = frame;
+    public void setFrame(JTextArea text){
         this.text = text;
     }
 

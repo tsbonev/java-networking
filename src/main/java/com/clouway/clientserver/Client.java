@@ -13,16 +13,14 @@ public class Client implements Runnable{
 
     private int port;
     private String host;
-    private JFrame frame;
     private JTextArea text;
 
-    public Client(int port, String host) {
+    public Client(String host, int port) {
         this.port = port;
         this.host = host;
     }
 
-    public void setFrame(JFrame frame, JTextArea text){
-        this.frame = frame;
+    public void setFrame(JTextArea text){
         this.text = text;
     }
 
