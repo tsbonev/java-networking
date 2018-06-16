@@ -20,9 +20,30 @@ public class Server implements Runnable{
         this.text = text;
     }
 
-    private ServerSocket getSocket(int port) throws IOException {
+
+    /**
+     * Returns an instance of a server socket.
+     *
+     * @param port to be used for the socket
+     * @return
+     * @throws IOException
+     */
+    protected ServerSocket getSocket(int port) throws IOException {
 
         return new ServerSocket(port);
+
+    }
+
+    /**
+     * Returns an instance of PrintWriter.
+     *
+     * @param clientSocket socket to build writer from
+     * @return
+     * @throws IOException
+     */
+    protected PrintWriter getWriter(Socket clientSocket) throws IOException {
+
+        return new PrintWriter(clientSocket.getOutputStream(), true);
 
     }
 
@@ -34,8 +55,7 @@ public class Server implements Runnable{
         try(
                 ServerSocket serverSocket = getSocket(port);
                 Socket clientSocket = serverSocket.accept();
-                PrintWriter out =
-                        new PrintWriter(clientSocket.getOutputStream(), true)
+                PrintWriter out = getWriter(clientSocket)
 
         ) {
 

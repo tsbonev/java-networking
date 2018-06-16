@@ -13,7 +13,6 @@ import static org.hamcrest.CoreMatchers.is;
 
 public class ClientTest {
 
-
     //region Stub setup
 
     Socket socket = new Socket();
