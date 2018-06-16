@@ -16,7 +16,6 @@ public class ClientServerIntegrationTest {
     @Test
     public void serverStartsAndWaitsForClient() {
 
-        Client client = new Client("localhost", 4445);
         Server server = new Server(4445);
 
         server.setFrame(text);
@@ -58,9 +57,8 @@ public class ClientServerIntegrationTest {
     }
 
     @Test
-    public void serverWritesToJframe() throws InterruptedException {
+    public void serverWritesToJFrame() throws InterruptedException {
 
-        Client client = new Client("localhost", 4447);
         Server server = new Server(4447);
 
         server.setFrame(text);

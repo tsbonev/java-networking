@@ -11,7 +11,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.time.LocalDate;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
@@ -85,7 +84,7 @@ public class ServerTest {
     }
 
     @Test
-    public void serverSendsMessage() throws InterruptedException {
+    public void serverSendsMessageAndCloses() throws InterruptedException {
 
         server.setFrame(text);
 
@@ -102,8 +101,52 @@ public class ServerTest {
     }
 
     @Test
-    public void serverWaitsForClient(){
-        
+    public void serverHasNoSetUpFrame() throws InterruptedException {
+
+        server.setFrame(new JTextArea());
+
+        Thread serverThread = new Thread(server);
+
+        serverThread.start();
+
+        serverThread.join();
+
+        assertThat(socketOut.toString().startsWith("Hello,"), is(true));
+        assertThat(outContent.toString().isEmpty(), is(true));
+        assertThat(errContent.toString().isEmpty(), is(true));
+
+    }
+
+    @Test
+    public void serverHasNoTextArea() throws InterruptedException {
+
+        server.setFrame(null);
+
+        Thread serverThread = new Thread(server);
+
+        serverThread.start();
+        serverThread.join();
+
+        assertThat(outContent.toString().isEmpty(), is(true));
+        assertThat(socketOut.toString().isEmpty(), is(true));
+        assertThat(errContent.toString().isEmpty(), is(false));
+
+    }
+
+    @Test
+    public void serverWaitsForClient() throws InterruptedException {
+
+        Server newServer = new Server(4455);
+
+        newServer.setFrame(text);
+
+        Thread serverThread = new Thread(newServer);
+
+        serverThread.start();
+
+        serverThread.join(100);
+
+        assertThat(outContent.toString(), is("Started server\n"));
 
 
     }
