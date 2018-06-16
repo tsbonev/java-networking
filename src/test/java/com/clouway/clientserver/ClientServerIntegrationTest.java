@@ -8,16 +8,16 @@ import static org.hamcrest.CoreMatchers.is;
 
 public class ClientServerIntegrationTest {
 
-    Client client = new Client("localhost", 4444);
-    Server server = new Server(4444);
-
     FramePackage framePackage = SetupFrame.setupFrame();
 
     JTextArea text = framePackage.getText();
 
 
     @Test
-    public void serverStartsAndWaitsForClient(){
+    public void serverStartsAndWaitsForClient() {
+
+        Client client = new Client("localhost", 4445);
+        Server server = new Server(4445);
 
         server.setFrame(text);
 
@@ -27,10 +27,15 @@ public class ClientServerIntegrationTest {
 
         assertThat(serverThread.isAlive(), is(true));
 
+        serverThread.interrupt();
+
     }
 
     @Test
     public void serverStopsAfterConnectingToClient() throws InterruptedException {
+
+        Client client = new Client("localhost", 4446);
+        Server server = new Server(4446);
 
         server.setFrame(text);
         client.setFrame(text);
@@ -45,7 +50,8 @@ public class ClientServerIntegrationTest {
 
         assertThat(clientThread.isAlive(), is(true));
 
-        Thread.currentThread().sleep(100);
+        serverThread.join();
+        clientThread.join();
 
         assertThat(serverThread.isAlive(), is(false));
 
@@ -53,6 +59,9 @@ public class ClientServerIntegrationTest {
 
     @Test
     public void serverWritesToJframe() throws InterruptedException {
+
+        Client client = new Client("localhost", 4447);
+        Server server = new Server(4447);
 
         server.setFrame(text);
         Thread serverThread = new Thread(server);

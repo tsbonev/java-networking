@@ -4,16 +4,15 @@ import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class Client implements Runnable{
 
-
     private int port;
     private String host;
     private JTextArea text;
-
 
 
     public Client(String host, int port) {
@@ -45,6 +44,8 @@ public class Client implements Runnable{
      */
     protected BufferedReader getReader(Socket socket) throws IOException {
 
+        if(null == socket) throw new ConnectException();
+
         return new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
 
@@ -55,6 +56,7 @@ public class Client implements Runnable{
      * @param text JTextArea that has been linked to a JFrame
      */
     public void setFrame(JTextArea text){
+
         this.text = text;
     }
 
@@ -67,6 +69,8 @@ public class Client implements Runnable{
                 Socket socket = getSocket(host, port);
                 BufferedReader in = getReader(socket)
         ) {
+
+            if(socket == null) throw new UnknownHostException();
 
             text.append("Connected to server\n");
             String fromServer;
