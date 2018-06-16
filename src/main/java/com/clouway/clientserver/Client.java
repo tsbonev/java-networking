@@ -14,18 +14,47 @@ public class Client implements Runnable{
     private String host;
     private JTextArea text;
 
+
+
     public Client(String host, int port) {
         this.port = port;
         this.host = host;
     }
 
+    /**
+     * Returns an instance of a socket.
+     *
+     * @param host to be used
+     * @param port to be used
+     * @return
+     * @throws IOException
+     */
     private Socket getSocket(String host, int port) throws IOException {
 
         return new Socket(host, port);
 
     }
 
+    /**
+     * Returns a buffered reader from the
+     * socket's input stream.
+     *
+     * @param socket to get the stream from
+     * @return
+     * @throws IOException
+     */
+    private BufferedReader getReader(Socket socket) throws IOException {
 
+        return new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+    }
+
+    /**
+     * Sets this class' JTextArea to a JTextArea that
+     * has previously been linked to a JFrame.
+     *
+     * @param text JTextArea that has been linked to a JFrame
+     */
     public void setFrame(JTextArea text){
         this.text = text;
     }
@@ -37,8 +66,7 @@ public class Client implements Runnable{
 
         try(
                 Socket socket = getSocket(host, port);
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(socket.getInputStream()))
+                BufferedReader in = getReader(socket)
         ) {
 
             text.append("Connected to server\n");

@@ -1,26 +1,19 @@
 package com.clouway.clientserver;
 
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Rule;
 import org.junit.Test;
 import javax.swing.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 
-public class ClientServerTest {
+public class ClientServerIntegrationTest {
 
     Client client = new Client("localhost", 4444);
     Server server = new Server(4444);
-    ClientServer cs;
 
     FramePackage framePackage = SetupFrame.setupFrame();
 
-    JFrame frame = framePackage.getFrame();
     JTextArea text = framePackage.getText();
-
-    @Rule
-    JUnitRuleMockery mockery = new JUnitRuleMockery();
 
 
     @Test
