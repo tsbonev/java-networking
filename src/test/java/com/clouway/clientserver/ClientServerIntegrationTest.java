@@ -45,7 +45,7 @@ public class ClientServerIntegrationTest {
 
         assertThat(clientThread.isAlive(), is(true));
 
-        Thread.currentThread().sleep(50);
+        Thread.currentThread().sleep(100);
 
         assertThat(serverThread.isAlive(), is(false));
 
@@ -58,7 +58,7 @@ public class ClientServerIntegrationTest {
         Thread serverThread = new Thread(server);
         serverThread.start();
 
-        Thread.currentThread().sleep(50);
+        Thread.currentThread().sleep(100);
 
         String log = "Started server\n";
 

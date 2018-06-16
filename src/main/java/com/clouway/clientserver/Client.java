@@ -29,7 +29,7 @@ public class Client implements Runnable{
      * @return
      * @throws IOException
      */
-    private Socket getSocket(String host, int port) throws IOException {
+    protected Socket getSocket(String host, int port) throws IOException {
 
         return new Socket(host, port);
 
@@ -43,10 +43,9 @@ public class Client implements Runnable{
      * @return
      * @throws IOException
      */
-    private BufferedReader getReader(Socket socket) throws IOException {
+    protected BufferedReader getReader(Socket socket) throws IOException {
 
         return new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
     }
 
     /**
