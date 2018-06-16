@@ -1,5 +1,7 @@
 package com.clouway.clientserver;
 
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.junit.Test;
 import javax.swing.*;
 
@@ -16,6 +18,10 @@ public class ClientServerTest {
 
     JFrame frame = framePackage.getFrame();
     JTextArea text = framePackage.getText();
+
+    @Rule
+    JUnitRuleMockery mockery = new JUnitRuleMockery();
+
 
     @Test
     public void serverStartsAndWaitsForClient(){

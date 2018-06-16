@@ -20,13 +20,19 @@ public class Server implements Runnable{
         this.text = text;
     }
 
+    private ServerSocket getSocket(int port) throws IOException {
+
+        return new ServerSocket(port);
+
+    }
+
     @Override
     public void run() {
 
         text.append("Started server\n");
 
         try(
-                ServerSocket serverSocket = new ServerSocket(port);
+                ServerSocket serverSocket = getSocket(port);
                 Socket clientSocket = serverSocket.accept();
                 PrintWriter out =
                         new PrintWriter(clientSocket.getOutputStream(), true)

@@ -19,6 +19,13 @@ public class Client implements Runnable{
         this.host = host;
     }
 
+    private Socket getSocket(String host, int port) throws IOException {
+
+        return new Socket(host, port);
+
+    }
+
+
     public void setFrame(JTextArea text){
         this.text = text;
     }
@@ -29,7 +36,7 @@ public class Client implements Runnable{
         text.append("Started client\n");
 
         try(
-                Socket socket = new Socket(host, port);
+                Socket socket = getSocket(host, port);
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(socket.getInputStream()))
         ) {
