@@ -13,7 +13,7 @@ public class Main {
 
         URL url = new URL("http://google.com");
 
-        File fileIn = new File("src/test/resources/large.txt");
+        //File fileIn = new File("src/test/resources/large.txt");
         File fileOut = new File("src/test/resources/download.txt");
 
         DownloadProgress listener = new DownloadProgress();
@@ -21,9 +21,9 @@ public class Main {
         DownloadAgent agent = new DownloadAgent(listener);
 
 
-        //agent.setUrl(url);
+        agent.setUrl(url);
 
-        agent.setUrl(fileIn);
+        //agent.setUrl(fileIn);
         agent.setOutput(fileOut);
 
         agent.downloadFile();

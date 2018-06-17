@@ -68,6 +68,7 @@ public class DownloadAgent {
 
         try (BufferedOutputStream out = getOutStream();
              BufferedInputStream in = getInputStream()) {
+
             long fileSize = in.available();
             int progressPercent = 0;
             percentInterval = fileSize / downloadRatio;
@@ -79,7 +80,7 @@ public class DownloadAgent {
 
                 if (++counter >= percentInterval && counter % percentInterval == 0) {
                     progressPercent = calculateProgress(progressPercent, fileSize, percentInterval);
-                    listener.updateOnProgress(progressPercent);
+                    if(progressPercent < 100) listener.updateOnProgress(progressPercent);
                 }
                 out.write(transferData);
                 transferData = in.read();
@@ -88,7 +89,6 @@ public class DownloadAgent {
             progressPercent = calculateProgress(progressPercent, fileSize, (double) counter);
             listener.updateOnProgress(progressPercent);
             System.out.println("Download finished!");
-
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -100,8 +100,9 @@ public class DownloadAgent {
     }
 
     private int calculateProgress(int progress, double total, double amount) {
-        progress += (int) ((amount / total) * 100);
-        if (progress > 100) progress = 100;
+        int increase = (int) ((amount / total) * 100);
+        if (progress + increase >= 100) return 100;
+        progress += increase;
         return progress;
     }
 
