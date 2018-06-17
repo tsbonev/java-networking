@@ -1,10 +1,14 @@
 package com.clouway.downloadagent;
 
 import org.apache.commons.io.FileUtils;
+import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -13,26 +17,40 @@ import static org.hamcrest.CoreMatchers.is;
 
 public class DownloadAgentTest {
 
-    /*
 
-    DownloadAgent agent = new DownloadAgent();
+    DownloadAgent agent = new DownloadAgent(new DownloadProgress());
+
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
+
+    @Before
+    public void captureOut(){
+        System.setOut(new PrintStream(outContent));
+    }
+
+    @After
+    public void restoreOut(){
+        System.setOut(System.out);
+    }
 
     @Test
-    public void acceptValidUrlString() throws MalformedURLException {
+    public void acceptsValidUrlString() throws MalformedURLException {
 
         assertThat(agent.setUrl("http://www.example.com"), is(true));
 
     }
 
     @Test(expected = MalformedURLException.class)
-    public void rejectInvalidUrlString() throws MalformedURLException{
+    public void rejectsInvalidUrlString() throws MalformedURLException{
 
         agent.setUrl("this is not an url");
 
     }
 
     @Test
-    public void acceptValidUrlObject() throws MalformedURLException {
+    public void acceptsValidUrlObject() throws MalformedURLException {
 
         URL url = new URL("http://www.example.com");
 
@@ -41,7 +59,7 @@ public class DownloadAgentTest {
     }
 
     @Test (expected = MalformedURLException.class)
-    public void rejectInvalidUrlObject() throws MalformedURLException {
+    public void rejectsInvalidUrlObject() throws MalformedURLException {
 
         URL url = null;
 
@@ -50,39 +68,78 @@ public class DownloadAgentTest {
     }
 
     @Test
-    public void acceptFile() throws MalformedURLException {
+    public void acceptValidFile() throws MalformedURLException {
 
-        File file = new File("/home/clouway/workspaces/idea/networking/src/test/resources/text.txt");
+        File file = new File("src/test/resources/text.txt");
 
         assertThat(agent.setUrl(file), is(true));
 
     }
 
     @Test
-    public void rejectNonExistentFile() throws MalformedURLException{
+    public void downloadsValidLargeFile() throws IOException {
 
-        File file = new File("non-existent-text.txt");
+        File fileIn = new File("src/test/resources/large.txt");
+        File fileOut = new File("src/test/resources/download.txt");
 
-        assertThat(agent.setUrl(file), is(false));
+        agent.setUrl(fileIn);
+        agent.setOutput(fileOut);
+
+        agent.downloadFile();
+
+        assertThat(FileUtils.contentEquals(fileIn, fileOut), is(true));
 
     }
 
     @Test
-    public void downloadFile() throws IOException {
+    public void downloadPrintsProgress() throws IOException {
 
-        File file = new File("src/test/resources/text.txt");
+        ProgressListener listener = context.mock(ProgressListener.class);
 
-        agent.setUrl(file);
+        String content = "This is test content";
 
-        File download = agent.downloadFile(10000, 10000);
+        InputStream inputStream = new ByteArrayInputStream(content.getBytes());
 
-        assertThat(FileUtils.contentEquals(file, download), is(true));
+        BufferedInputStream in = new BufferedInputStream(inputStream);
 
-        //така и начина по - който прогреса се обновява.
-        //ask what this entails
+        File file = new File("src/test/resources/download.txt");
+
+        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file)){
+            @Override
+            public void write(int b){
+                return;
+            }
+        };
+
+        DownloadAgent agent = new DownloadAgent(listener){
+
+            @Override
+            protected BufferedInputStream getInputStream(){
+                return in;
+            }
+
+            @Override
+            protected BufferedOutputStream getOutStream(){
+                return out;
+            }
+
+        };
+
+        context.checking(new Expectations(){{
+
+            allowing(listener).updateOnProgress(with(any(Integer.class)));
+
+        }});
+
+
+        agent.setOutput(file);
+
+        agent.downloadFile();
+
+        assertThat(outContent.toString().startsWith("Starting download...\n"), is(true));
+        assertThat(outContent.toString().endsWith("Download finished!\n"), is(true));
 
     }
 
-    */
 
 }

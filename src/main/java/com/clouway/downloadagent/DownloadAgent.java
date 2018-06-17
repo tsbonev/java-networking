@@ -38,8 +38,6 @@ public class DownloadAgent {
 
     public boolean setUrl(File f) throws MalformedURLException {
 
-        if (!f.exists()) return false;
-
         this.url = f.toURI().toURL();
         return true;
 
@@ -66,7 +64,7 @@ public class DownloadAgent {
 
     }
 
-    public void downloadFile() {
+    public File downloadFile() {
 
         try (BufferedOutputStream out = getOutStream();
              BufferedInputStream in = getInputStream()) {
@@ -83,19 +81,22 @@ public class DownloadAgent {
                     progressPercent = calculateProgress(progressPercent, fileSize, percentInterval);
                     listener.updateOnProgress(progressPercent);
                 }
-                transferData = in.read();
                 out.write(transferData);
+                transferData = in.read();
             }
 
             progressPercent = calculateProgress(progressPercent, fileSize, (double) counter);
             listener.updateOnProgress(progressPercent);
             System.out.println("Download finished!");
 
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return outputFile;
     }
 
     private int calculateProgress(int progress, double total, double amount) {
