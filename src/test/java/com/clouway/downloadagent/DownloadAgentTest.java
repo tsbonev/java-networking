@@ -127,7 +127,7 @@ public class DownloadAgentTest {
 
         context.checking(new Expectations(){{
 
-            allowing(listener).updateOnProgress(with(any(Integer.class)));
+            atLeast(2).of(listener).updateOnProgress(with(any(Integer.class)));
 
         }});
 
