@@ -1,12 +1,10 @@
 package com.clouway;
 
 import com.clouway.downloadagent.DownloadAgent;
-import sun.management.resources.agent;
+import com.clouway.downloadagent.DownloadProgress;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 public class Main {
@@ -15,11 +13,20 @@ public class Main {
 
         URL url = new URL("http://google.com");
 
-        DownloadAgent agent = new DownloadAgent();
+        File fileIn = new File("src/test/resources/large.txt");
+        File fileOut = new File("src/test/resources/download.txt");
 
-        agent.setUrl(url);
+        DownloadProgress listener = new DownloadProgress();
 
-        agent.downloadFile(10000, 10000);
+        DownloadAgent agent = new DownloadAgent(listener);
+
+
+        //agent.setUrl(url);
+
+        agent.setUrl(fileIn);
+        agent.setOutput(fileOut);
+
+        agent.downloadFile();
 
     }
 }

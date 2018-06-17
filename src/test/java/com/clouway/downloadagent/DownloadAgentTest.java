@@ -13,6 +13,8 @@ import static org.hamcrest.CoreMatchers.is;
 
 public class DownloadAgentTest {
 
+    /*
+
     DownloadAgent agent = new DownloadAgent();
 
     @Test
@@ -80,5 +82,7 @@ public class DownloadAgentTest {
         //ask what this entails
 
     }
+
+    */
 
 }
