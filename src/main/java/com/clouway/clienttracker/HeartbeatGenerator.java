@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.SocketException;
 
 public class HeartbeatGenerator extends AbstractExecutionThreadService{
 
@@ -65,19 +64,20 @@ public class HeartbeatGenerator extends AbstractExecutionThreadService{
     }
 
     @Override
-    protected void run() throws NoSocketException {
+    protected void run() {
 
         try{
 
             while (true){
                 out.println("tick");
                 out.flush();
-                Thread.currentThread().sleep(1000);
+                Thread.currentThread().sleep(300);
                 if(in.readLine() == null) throw new NoSocketException();
             }
 
-        }
-        catch (InterruptedException e) {
+        } catch (NoSocketException e){
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();

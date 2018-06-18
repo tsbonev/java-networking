@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.SocketException;
 
 public class HeartbeatListener extends AbstractExecutionThreadService {
 
@@ -72,7 +71,8 @@ public class HeartbeatListener extends AbstractExecutionThreadService {
             while (true){
                 String fromClient;
                 while((fromClient = in.readLine()) != null) out.println(fromClient);
-                Thread.currentThread().sleep(1000);
+                out.flush();
+                Thread.currentThread().sleep(300);
             }
 
         }
