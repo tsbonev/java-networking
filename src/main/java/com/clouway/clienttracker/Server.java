@@ -1,13 +1,16 @@
 package com.clouway.clienttracker;
 
+import com.google.common.util.concurrent.AbstractExecutionThreadService;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
 
-public class Server implements Runnable {
+public class Server extends AbstractExecutionThreadService {
 
     private int port;
     private List<ClientHandler> clientList;
@@ -29,19 +32,27 @@ public class Server implements Runnable {
         return new ServerSocket(port);
     }
 
+    @Override
+    protected void startUp() throws Exception{
+        serverSocket = getSocket(port);
+    }
+
+    @Override
+    protected void triggerShutdown(){
+        close();
+    }
+
 
     @Override
     public void run() {
 
         try {
 
-            serverSocket = getSocket(port);
-
             while (shouldRun) {
                 clientSocket = serverSocket.accept();
                 ClientHandler handler = new ClientHandler(this.clientList, clientSocket);
                 this.clientList.add(handler);
-                handler.start();
+                handler.startAsync();
             }
 
             close();
@@ -59,6 +70,9 @@ public class Server implements Runnable {
     private void close() {
 
         try {
+            for (ClientHandler handler : clientList) {
+                handler.stopAsync();
+            }
             clientSocket.close();
             serverSocket.close();
         } catch (IOException e) {

@@ -1,11 +1,13 @@
 package com.clouway.clienttracker;
 
+import com.google.common.util.concurrent.AbstractExecutionThreadService;
+
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.List;
 
-public class ClientHandler extends Thread {
+public class ClientHandler extends AbstractExecutionThreadService {
 
     List<ClientHandler> clientList;
     Socket socket;
@@ -72,14 +74,32 @@ public class ClientHandler extends Thread {
     }
 
     @Override
-    public void run() {
+    protected void startUp(){
 
-        try{
-
+        try {
             out = getWriter(this.socket);
             sendToClient("You are client number " + clientList.size());
             sendToAll("Client " + clientList.size() + " has joined");
             in = getReader(this.socket);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    protected void triggerShutdown(){
+
+        for (ClientHandler handler : clientList) {
+            handler.close();
+        }
+
+    }
+
+    @Override
+    public void run() {
+
+        try{
 
             while (shouldRun) {
 

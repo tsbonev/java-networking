@@ -8,8 +8,7 @@ public class Main {
 
         Server server = new Server(4444);
 
-        Thread serverThread = new Thread(server);
-        serverThread.start();
+        server.startAsync();
 
     }
 }
