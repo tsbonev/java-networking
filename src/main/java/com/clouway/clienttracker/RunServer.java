@@ -1,8 +1,6 @@
-package com.clouway;
+package com.clouway.clienttracker;
 
-import com.clouway.clienttracker.Server;
-
-public class Main {
+public class RunServer {
 
     public static void main(String[] args) {
 
@@ -12,4 +10,5 @@ public class Main {
         serverThread.start();
 
     }
+
 }
