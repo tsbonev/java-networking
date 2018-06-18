@@ -69,12 +69,12 @@ public class ClientHandler extends AbstractExecutionThreadService {
      * @param text to be sent
      */
     private void sendToClient(String text) {
-            out.println(text);
-            out.flush();
+        out.println(text);
+        out.flush();
     }
 
     @Override
-    protected void startUp(){
+    protected void startUp() {
 
         try {
             out = getWriter(this.socket);
@@ -88,7 +88,7 @@ public class ClientHandler extends AbstractExecutionThreadService {
     }
 
     @Override
-    protected void triggerShutdown(){
+    protected void triggerShutdown() {
 
         close();
 
@@ -97,21 +97,23 @@ public class ClientHandler extends AbstractExecutionThreadService {
     @Override
     protected void run() {
 
-        try{
+        try {
 
             while (shouldRun) {
 
                 String fromClient;
 
-                while ((fromClient = in.readLine()) != null){
+                while ((fromClient = in.readLine()) != null) {
                     sendToAll(fromClient);
                 }
+
+                sendToAll("tick");
 
             }
 
             close();
 
-        } catch (SocketException e){
+        } catch (SocketException e) {
             e.printStackTrace();
             close();
         } catch (IOException e) {

@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 
 public class Client extends AbstractExecutionThreadService {
 
@@ -83,7 +84,7 @@ public class Client extends AbstractExecutionThreadService {
     }
 
     @Override
-    protected void run() {
+    protected void run() throws IOException {
 
         try {
 
@@ -92,22 +93,21 @@ public class Client extends AbstractExecutionThreadService {
                 String fromServer;
                 String fromUser;
 
+
                 while ((fromServer = in.readLine()) != null) {
                     System.out.println(fromServer);
                 }
 
                 while ((fromUser = stdIn.readLine()) != null) {
-                    if(!socket.isConnected()) close();
                     out.write(fromUser);
                     out.flush();
                 }
-
 
             }
 
             close();
 
-        }catch (SocketException e){
+        }catch (SocketTimeoutException e){
             e.printStackTrace();
             close();
         }
