@@ -65,7 +65,7 @@ public class HeartbeatGenerator extends AbstractExecutionThreadService{
     }
 
     @Override
-    protected void run(){
+    protected void run() throws NoSocketException {
 
         try{
 
@@ -80,9 +80,6 @@ public class HeartbeatGenerator extends AbstractExecutionThreadService{
         catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSocketException e) {
-            this.stopAsync();
             e.printStackTrace();
         }
 

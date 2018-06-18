@@ -13,6 +13,8 @@ public class Client extends AbstractExecutionThreadService {
     private int port;
     private String host;
     boolean shouldRun = true;
+    private HeartbeatGenerator generator;
+    private ServerListener listener;
 
     private Socket socket;
     private PrintWriter out;
@@ -86,8 +88,10 @@ public class Client extends AbstractExecutionThreadService {
 
         try {
 
-            HeartbeatGenerator generator = new HeartbeatGenerator(socket);
+            generator = new HeartbeatGenerator(this.socket);
             generator.startAsync().awaitRunning();
+            listener = new ServerListener(this.socket);
+            listener.startAsync();
 
             while (shouldRun) {
 
@@ -99,16 +103,18 @@ public class Client extends AbstractExecutionThreadService {
 
         } catch (NoSocketException e) {
             e.printStackTrace();
-            close();
+            this.close();
         }
     }
 
     private void close() {
 
         try {
+
+            listener.stopAsync();
+
             out.close();
             in.close();
-            socket.close();
             stdIn.close();
             shouldRun = false;
             this.stopAsync();

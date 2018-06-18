@@ -16,6 +16,7 @@ public class Server extends AbstractExecutionThreadService {
     private boolean shouldRun = true;
     private ServerSocket serverSocket;
     private Socket clientSocket;
+    private HeartbeatListener listener;
 
 
     public Server() {
@@ -29,6 +30,22 @@ public class Server extends AbstractExecutionThreadService {
 
     protected ServerSocket getSocket(int port) throws IOException {
         return new ServerSocket(port);
+    }
+
+    protected void setHandler(List<ClientHandler> list, Socket socket){
+
+        ClientHandler handler = new ClientHandler(list, socket);
+        clientList.add(handler);
+        handler.startAsync().awaitRunning();
+
+    }
+
+    protected void setHeartbeatListener(Socket socket){
+
+        HeartbeatListener listener = new HeartbeatListener(socket);
+        listener.startAsync().awaitRunning();
+        this.listener = listener;
+
     }
 
     @Override
@@ -49,11 +66,8 @@ public class Server extends AbstractExecutionThreadService {
 
             while (shouldRun) {
                 clientSocket = serverSocket.accept();
-                ClientHandler handler = new ClientHandler(this.clientList, clientSocket);
-                HeartbeatListener listener = new HeartbeatListener(clientSocket);
-                listener.startAsync().awaitRunning();
-                this.clientList.add(handler);
-                handler.startAsync();
+                setHandler(this.clientList, this.clientSocket);
+                setHeartbeatListener(this.clientSocket);
 
                 System.out.println("New client has joined");
 
@@ -78,6 +92,7 @@ public class Server extends AbstractExecutionThreadService {
             }
             clientSocket.close();
             serverSocket.close();
+            listener.stopAsync();
             shouldRun = false;
             this.stopAsync();
         } catch (IOException e) {
