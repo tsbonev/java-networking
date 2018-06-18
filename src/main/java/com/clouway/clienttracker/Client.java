@@ -13,6 +13,10 @@ public class Client implements Runnable {
     private String host;
     boolean shouldRun = true;
 
+    private Socket socket;
+    private PrintWriter out;
+    private BufferedReader in;
+    private BufferedReader stdIn;
 
     public Client(String host, int port) {
         this.port = port;
@@ -57,10 +61,10 @@ public class Client implements Runnable {
 
         try {
 
-            Socket socket = getSocket(host, port);
-            PrintWriter out = getWriter(socket);
-            BufferedReader in = getReader(socket);
-            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+            socket = getSocket(host, port);
+            out = getWriter(socket);
+            in = getReader(socket);
+            stdIn = new BufferedReader(new InputStreamReader(System.in));
 
             while (shouldRun) {
 
@@ -68,21 +72,41 @@ public class Client implements Runnable {
                 String fromUser;
 
                 while((fromServer = in.readLine()) != null) {
-                    System.out.println("Server: " + fromServer);
+                    System.out.println(fromServer);
                 }
 
                 while ((fromUser = stdIn.readLine()) != null) {
                     out.write(fromUser);
+                    out.flush();
                 }
+
+                while (socket.isConnected()) throw new SocketException();
 
             }
 
+            close();
+
         }catch (SocketException e){
             e.printStackTrace();
+            close();
         }
         catch (IOException e) {
             e.printStackTrace();
+            close();
         }
+    }
+
+    private void close() {
+
+        try {
+            out.close();
+            in.close();
+            socket.close();
+            stdIn.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

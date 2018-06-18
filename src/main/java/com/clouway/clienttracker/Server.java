@@ -12,6 +12,9 @@ public class Server implements Runnable {
     private int port;
     private List<ClientHandler> clientList;
     private boolean shouldRun = true;
+    private ServerSocket serverSocket;
+    private Socket clientSocket;
+
 
     public Server() {
         this.clientList = new ArrayList<>();
@@ -32,20 +35,36 @@ public class Server implements Runnable {
 
         try {
 
-            ServerSocket serverSocket = getSocket(port);
+            serverSocket = getSocket(port);
 
             while (shouldRun) {
-                Socket clientSocket = serverSocket.accept();
+                clientSocket = serverSocket.accept();
                 ClientHandler handler = new ClientHandler(this.clientList, clientSocket);
                 this.clientList.add(handler);
                 handler.start();
             }
 
+            close();
+
         }  catch (SocketException e) {
             e.printStackTrace();
+            close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            close();
+        }
+
+    }
+
+    private void close() {
+
+        try {
+            clientSocket.close();
+            serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
 }
