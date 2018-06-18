@@ -1,5 +1,7 @@
 package com.clouway.clienttracker;
 
+import com.google.common.util.concurrent.AbstractExecutionThreadService;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,7 +9,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
 
-public class Client implements Runnable {
+public class Client extends AbstractExecutionThreadService {
 
     private int port;
     private String host;
@@ -51,36 +53,55 @@ public class Client implements Runnable {
 
     }
 
+    /**
+     * Returns a new instance of a print writer
+     * from the output stream of the current socket.
+     *
+     * @param socket
+     * @return
+     * @throws IOException
+     */
     protected PrintWriter getWriter(Socket socket) throws IOException {
 
         return new PrintWriter(socket.getOutputStream());
 
     }
 
-    public void run() {
+    @Override
+    protected void startUp() throws IOException {
+
+        socket = getSocket(host, port);
+        out = getWriter(socket);
+        in = getReader(socket);
+        stdIn = new BufferedReader(new InputStreamReader(System.in));
+
+    }
+
+    @Override
+    protected void triggerShutdown() {
+        close();
+    }
+
+    @Override
+    protected void run() {
 
         try {
-
-            socket = getSocket(host, port);
-            out = getWriter(socket);
-            in = getReader(socket);
-            stdIn = new BufferedReader(new InputStreamReader(System.in));
 
             while (shouldRun) {
 
                 String fromServer;
                 String fromUser;
 
-                while((fromServer = in.readLine()) != null) {
+                while ((fromServer = in.readLine()) != null) {
                     System.out.println(fromServer);
                 }
 
                 while ((fromUser = stdIn.readLine()) != null) {
+                    if(!socket.isConnected()) close();
                     out.write(fromUser);
                     out.flush();
                 }
 
-                while (socket.isConnected()) throw new SocketException();
 
             }
 
@@ -103,6 +124,8 @@ public class Client implements Runnable {
             in.close();
             socket.close();
             stdIn.close();
+            shouldRun = false;
+            this.stopAsync();
         } catch (IOException e) {
             e.printStackTrace();
         }

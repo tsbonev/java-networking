@@ -8,7 +8,6 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
 
 public class Server extends AbstractExecutionThreadService {
 
@@ -44,15 +43,19 @@ public class Server extends AbstractExecutionThreadService {
 
 
     @Override
-    public void run() {
+    protected void run() {
 
         try {
+
+            Overseer overseer = new Overseer(this, clientList);
+            overseer.startAsync();
 
             while (shouldRun) {
                 clientSocket = serverSocket.accept();
                 ClientHandler handler = new ClientHandler(this.clientList, clientSocket);
                 this.clientList.add(handler);
                 handler.startAsync();
+                System.out.println("New client has joined");
             }
 
             close();
@@ -75,6 +78,8 @@ public class Server extends AbstractExecutionThreadService {
             }
             clientSocket.close();
             serverSocket.close();
+            shouldRun = false;
+            this.stopAsync();
         } catch (IOException e) {
             e.printStackTrace();
         }

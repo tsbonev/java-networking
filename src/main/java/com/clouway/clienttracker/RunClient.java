@@ -6,9 +6,7 @@ public class RunClient {
 
         Client client = new Client("localhost", 4444);
 
-        Thread clientThread = new Thread(client);
-
-        clientThread.start();
+        client.startAsync();
 
     }
 

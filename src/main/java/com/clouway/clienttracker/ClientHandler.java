@@ -90,14 +90,12 @@ public class ClientHandler extends AbstractExecutionThreadService {
     @Override
     protected void triggerShutdown(){
 
-        for (ClientHandler handler : clientList) {
-            handler.close();
-        }
+        close();
 
     }
 
     @Override
-    public void run() {
+    protected void run() {
 
         try{
 
@@ -126,8 +124,11 @@ public class ClientHandler extends AbstractExecutionThreadService {
     private void close() {
 
         try {
+            socket.close();
             out.close();
             in.close();
+            shouldRun = false;
+            this.stopAsync();
         } catch (IOException e) {
             e.printStackTrace();
         }
