@@ -12,7 +12,7 @@ import java.util.List;
 public class Server extends AbstractExecutionThreadService {
 
     private int port;
-    private List<ClientHandler> clientList;
+    protected List<ClientHandler> clientList;
     private boolean shouldRun = true;
     private ServerSocket serverSocket;
     private Socket clientSocket;
@@ -84,7 +84,7 @@ public class Server extends AbstractExecutionThreadService {
 
     }
 
-    private void close() {
+    public void close() {
 
         try {
             for (ClientHandler handler : clientList) {

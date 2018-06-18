@@ -109,8 +109,6 @@ public class ClientHandler extends AbstractExecutionThreadService {
 
             }
 
-            close();
-
         } catch (SocketException e) {
             e.printStackTrace();
             close();

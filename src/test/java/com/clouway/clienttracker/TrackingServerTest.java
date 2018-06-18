@@ -161,4 +161,71 @@ public class TrackingServerTest {
 
     }
 
+    @Test
+    public void handlerPrintsWhenOtherHandlersStart() throws InterruptedException {
+
+        ClientHandler handler;
+
+        List<ClientHandler> list = new ArrayList<>();
+
+        handler = new ClientHandler(list, socket);
+
+        for(int i = 0; i < 5; i++){
+            list.add(handler);
+        }
+
+        handler.startAsync().awaitRunning();
+
+        Thread.sleep(1);
+
+        assertThat(socketOut.toString().split("\n").length, is(11));
+
+        handler.stopAsync();
+
+    }
+
+    @Test
+    public void serverKillsHandlersOnShutdown() throws InterruptedException {
+
+        List<ClientHandler> handlerList = new ArrayList<>();
+
+        ClientHandler handler = new ClientHandler(handlerList, socket);
+
+        handlerList.add(handler);
+
+        handler.startAsync().awaitRunning();
+
+        Server server = new Server(port){
+
+            @Override
+            protected ServerSocket getSocket(int port){
+                return serverSocket;
+            }
+
+            @Override
+            protected void setHeartbeatListener(Socket socket){
+                return;
+            }
+
+            @Override
+            protected void setHandler(List<ClientHandler> list, Socket socket){
+                this.clientList = handlerList;
+                return;
+            }
+
+        };
+
+        server.startAsync().awaitRunning();
+
+        Thread.sleep(1);
+
+        assertThat(handler.isRunning(), is(true));
+
+        server.stopAsync();
+
+        assertThat(server.isRunning(), is(false));
+        assertThat(handler.isRunning(), is(false));
+
+    }
+
 }
