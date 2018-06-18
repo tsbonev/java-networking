@@ -103,7 +103,7 @@ public class Client extends AbstractExecutionThreadService {
 
         } catch (NoSocketException e) {
             e.printStackTrace();
-            this.close();
+            this.stopAsync();
         }
     }
 
