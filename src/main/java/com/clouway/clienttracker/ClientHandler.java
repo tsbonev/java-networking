@@ -2,6 +2,7 @@ package com.clouway.clienttracker;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.List;
 
 public class ClientHandler extends Thread {
@@ -9,6 +10,8 @@ public class ClientHandler extends Thread {
     List<ClientHandler> clientList;
     Socket socket;
     boolean shouldRun = true;
+    private PrintWriter out;
+
 
     public ClientHandler(List<ClientHandler> clientList, Socket socket) {
         this.socket = socket;
@@ -36,15 +39,8 @@ public class ClientHandler extends Thread {
     }
 
     private void sendToClient(String text) {
-        try (
-                PrintWriter out = getWriter(this.socket)
-        ) {
-
             out.println(text);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            out.flush();
     }
 
     @Override
@@ -52,11 +48,13 @@ public class ClientHandler extends Thread {
 
         try{
 
-            BufferedReader in = getReader(this.socket);
-
+            out = getWriter(this.socket);
             sendToClient("You are client number " + clientList.size());
+            sendToAll("Client " + clientList.size() + " has joined");
 
             while (shouldRun) {
+
+                BufferedReader in = getReader(this.socket);
 
                 String fromClient;
 
@@ -66,6 +64,8 @@ public class ClientHandler extends Thread {
 
             }
 
+        } catch (SocketException e){
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

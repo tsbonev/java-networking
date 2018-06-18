@@ -31,6 +31,7 @@ public class Server implements Runnable {
     public void run() {
 
         try {
+
             ServerSocket serverSocket = getSocket(port);
 
             while (shouldRun) {
@@ -40,7 +41,7 @@ public class Server implements Runnable {
                 handler.start();
             }
 
-        } catch (SocketException e) {
+        }  catch (SocketException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();

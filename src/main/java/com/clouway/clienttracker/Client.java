@@ -56,6 +56,7 @@ public class Client implements Runnable {
     public void run() {
 
         try {
+
             Socket socket = getSocket(host, port);
             PrintWriter out = getWriter(socket);
             BufferedReader in = getReader(socket);
@@ -66,15 +67,16 @@ public class Client implements Runnable {
                 String fromServer;
                 String fromUser;
 
-                if ((fromServer = in.readLine()) != null) {
+                while((fromServer = in.readLine()) != null) {
                     System.out.println("Server: " + fromServer);
                 }
 
-                if ((fromUser = stdIn.readLine()) != null) {
+                while ((fromUser = stdIn.readLine()) != null) {
                     out.write(fromUser);
                 }
 
             }
+
         }catch (SocketException e){
             e.printStackTrace();
         }
