@@ -47,18 +47,18 @@ public class Server extends AbstractExecutionThreadService {
 
         try {
 
-            Overseer overseer = new Overseer(this, clientList);
-            overseer.startAsync();
-
             while (shouldRun) {
                 clientSocket = serverSocket.accept();
                 ClientHandler handler = new ClientHandler(this.clientList, clientSocket);
+                HeartbeatListener listener = new HeartbeatListener(clientSocket);
+                listener.startAsync().awaitRunning();
                 this.clientList.add(handler);
                 handler.startAsync();
+
                 System.out.println("New client has joined");
+
             }
 
-            close();
 
         }  catch (SocketException e) {
             e.printStackTrace();

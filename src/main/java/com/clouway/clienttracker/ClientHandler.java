@@ -107,8 +107,6 @@ public class ClientHandler extends AbstractExecutionThreadService {
                     sendToAll(fromClient);
                 }
 
-                sendToAll("tick");
-
             }
 
             close();
