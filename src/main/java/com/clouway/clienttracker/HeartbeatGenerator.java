@@ -13,6 +13,7 @@ public class HeartbeatGenerator extends AbstractExecutionThreadService{
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
+    private int beatDelay = 3000;
 
     public HeartbeatGenerator(Socket socket) {
         this.socket = socket;
@@ -30,6 +31,15 @@ public class HeartbeatGenerator extends AbstractExecutionThreadService{
 
         return new PrintWriter(socket.getOutputStream());
 
+    }
+
+    /**
+     * Returns the beat delay of this class.
+     *
+     * @return
+     */
+    protected int getBeatDelay(){
+        return this.beatDelay;
     }
 
     /**
@@ -64,21 +74,19 @@ public class HeartbeatGenerator extends AbstractExecutionThreadService{
     }
 
     @Override
-    protected void run() throws IOException {
+    protected void run() {
 
         try{
 
             while (true){
                 out.println("tick");
                 out.flush();
-                Thread.currentThread().sleep(300);
+                Thread.sleep(getBeatDelay());
                 if(in.readLine() == null) throw new NoSocketException();
             }
 
         } catch (NoSocketException e){
             e.printStackTrace();
-            socket.close();
-            this.stopAsync();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {

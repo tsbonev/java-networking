@@ -13,6 +13,7 @@ public class HeartbeatListener extends AbstractExecutionThreadService {
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
+    private int beatDelay = 3000;
 
     public HeartbeatListener(Socket socket) {
         this.socket = socket;
@@ -30,6 +31,15 @@ public class HeartbeatListener extends AbstractExecutionThreadService {
 
         return new PrintWriter(socket.getOutputStream());
 
+    }
+
+    /**
+     * Returns the beat delay of this class.
+     *
+     * @return
+     */
+    protected int getBeatDelay(){
+        return this.beatDelay;
     }
 
     /**
@@ -69,10 +79,16 @@ public class HeartbeatListener extends AbstractExecutionThreadService {
         try{
 
             while (true){
+
+                notifyAll();
+                wait(getBeatDelay());
+
                 String fromClient;
-                while((fromClient = in.readLine()) != null) out.println(fromClient);
-                out.flush();
-                Thread.currentThread().sleep(300);
+                while((fromClient = in.readLine()) != null) {
+                    out.println(fromClient);
+                    out.flush();
+                    Thread.sleep(getBeatDelay());
+                }
             }
 
         }

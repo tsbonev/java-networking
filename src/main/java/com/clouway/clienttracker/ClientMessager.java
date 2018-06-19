@@ -2,15 +2,18 @@ package com.clouway.clienttracker;
 
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ServerListener extends AbstractExecutionThreadService {
+public class ClientMessager extends AbstractExecutionThreadService {
 
     Socket socket;
-    private BufferedReader in;
+    private PrintWriter out;
 
-    public ServerListener(Socket socket) {
+    public ClientMessager(Socket socket) {
         this.socket = socket;
     }
 
@@ -22,16 +25,16 @@ public class ServerListener extends AbstractExecutionThreadService {
      * @return
      * @throws IOException
      */
-    protected BufferedReader getReader(Socket socket) throws IOException {
+    protected PrintWriter getWriter(Socket socket) throws IOException {
 
-        return new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        return new PrintWriter(socket.getOutputStream());
 
     }
 
 
     @Override
     protected void startUp() throws IOException {
-        this.in = getReader(socket);
+        this.out = getWriter(socket);
     }
 
     @Override
@@ -52,17 +55,19 @@ public class ServerListener extends AbstractExecutionThreadService {
         while (true)
         {
 
-            PrintWriter stdOut =
-                    new PrintWriter(new OutputStreamWriter(System.out));
-            String fromServer;
+            BufferedReader stdIn =
+                    new BufferedReader(new InputStreamReader(System.in));
 
-            while ((fromServer = in.readLine()) != null && !fromServer.equalsIgnoreCase("tick")){
+            String fromClient;
 
-                stdOut.println(fromServer);
-                stdOut.flush();
+            while ((fromClient = stdIn.readLine()) != null && !fromClient.equalsIgnoreCase("tick")){
+
+                out.println(fromClient);
+                out.flush();
 
             }
 
         }
     }
+
 }

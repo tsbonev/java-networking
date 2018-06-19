@@ -15,6 +15,7 @@ public class Client extends AbstractExecutionThreadService {
     boolean shouldRun = true;
     private HeartbeatGenerator generator;
     private ServerListener listener;
+    private ClientMessager messenger;
 
     private Socket socket;
     private PrintWriter out;
@@ -92,6 +93,8 @@ public class Client extends AbstractExecutionThreadService {
             generator.startAsync().awaitRunning();
             listener = new ServerListener(this.socket);
             listener.startAsync();
+            messenger = new ClientMessager(this.socket);
+            messenger.startAsync().awaitRunning();
 
             while (shouldRun) {
 
@@ -103,7 +106,10 @@ public class Client extends AbstractExecutionThreadService {
 
         } catch (NoSocketException e) {
             e.printStackTrace();
-            this.stopAsync();
+                System.out.println("Stopping...");
+                shouldRun = false;
+                this.stopAsync();
+                return;
         }
     }
 
@@ -111,13 +117,13 @@ public class Client extends AbstractExecutionThreadService {
 
         try {
 
-            listener.stopAsync();
+            listener.stopAsync().awaitTerminated();
+            messenger.stopAsync().awaitTerminated();
 
+            socket.close();
             out.close();
             in.close();
             stdIn.close();
-            shouldRun = false;
-            this.stopAsync();
         } catch (IOException e) {
             e.printStackTrace();
         }

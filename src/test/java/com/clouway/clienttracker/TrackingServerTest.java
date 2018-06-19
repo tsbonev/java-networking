@@ -124,14 +124,21 @@ public class TrackingServerTest {
     @Test
     public void heartbeatGeneratorShouldSendTickAndStop() throws InterruptedException, TimeoutException {
 
-        HeartbeatGenerator generator = new HeartbeatGenerator(socket);
+        HeartbeatGenerator generator = new HeartbeatGenerator(socket){
+            @Override
+            protected int getBeatDelay(){
+                return 1;
+            }
+
+        };
+
         generator.startAsync().awaitRunning();
 
-        Thread.currentThread().sleep(1);
+        Thread.sleep(1);
 
         assertThat(socketOut.toString(), is("tick\n"));
 
-        generator.awaitTerminated(600, TimeUnit.MILLISECONDS);
+        generator.awaitTerminated(2, TimeUnit.MILLISECONDS);
 
         assertThat(generator.isRunning(), is(false));
         assertThat(errContent.toString().contains("NoSocketException"), is(true));
