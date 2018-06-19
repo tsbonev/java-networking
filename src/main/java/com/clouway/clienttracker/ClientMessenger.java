@@ -31,7 +31,6 @@ public class ClientMessenger extends AbstractExecutionThreadService {
 
     }
 
-
     @Override
     protected void startUp() throws IOException {
         this.out = getWriter(socket);

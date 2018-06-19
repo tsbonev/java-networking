@@ -48,6 +48,7 @@ public class TrackingServerTest {
     };
 
     final int port = 4455;
+    final String host = "localhost";
 
     @Rule
     public JUnitRuleMockery context = new JUnitRuleMockery();
@@ -121,7 +122,7 @@ public class TrackingServerTest {
     }
 
     @Test
-    public void handlerPrintsWhenOtherHandlersStart() throws InterruptedException {
+    public void handlerNotifiesConnectionsAndSendsMessages() throws InterruptedException {
 
         ClientHandler handler;
 
@@ -138,6 +139,10 @@ public class TrackingServerTest {
         Thread.sleep(1);
 
         assertThat(socketOut.toString().split("\n").length, is(11));
+        //1 You are client number 5
+        //5 notifications total
+        //5 messages read from input
+        //Total should be 11
 
         handler.stopAsync();
 
@@ -181,6 +186,58 @@ public class TrackingServerTest {
 
         assertThat(server.isRunning(), is(false));
         assertThat(handler.isRunning(), is(false));
+
+    }
+
+    @Test
+    public void clientShouldStopWithGenerator() throws InterruptedException {
+
+        HeartbeatGenerator hbGenerator = new HeartbeatGenerator(socket){
+
+            @Override
+            protected int getBeatDelay(){
+                return 100;
+            }
+
+        };
+
+        Client client = new Client(host, port){
+
+            @Override
+            protected Socket getSocket(String host, int port){
+                return socket;
+            }
+
+            @Override
+            protected void startMessenger(Socket socket){
+                return;
+            }
+
+            @Override
+            protected void startListener(Socket socket){
+                return;
+            }
+
+            @Override
+            protected void startGenerator(Socket socket){
+                this.generator = hbGenerator;
+            }
+
+        };
+
+        hbGenerator.startAsync().awaitRunning();
+        client.startAsync().awaitRunning();
+
+        assertThat(hbGenerator.isRunning(), is(true));
+        assertThat(client.isRunning(), is(true));
+
+        hbGenerator.stopAsync();
+
+        Thread.sleep(1);
+
+        assertThat(errContent.toString().contains("NoSocketException"), is(true));
+        assertThat(outContent.toString().contains("Stopping...\n"), is(true));
+        assertThat(client.isRunning(), is(false));
 
     }
 

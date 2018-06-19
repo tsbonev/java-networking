@@ -88,7 +88,6 @@ public class Client extends AbstractExecutionThreadService {
 
         listener =  new ServerListener(socket);
         listener.startAsync().awaitRunning();
-
     }
 
     /**

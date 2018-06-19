@@ -13,7 +13,7 @@ public class HeartbeatGenerator extends AbstractExecutionThreadService {
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
-    private int beatDelay = 3000;
+    private int beatDelay = 5000;
 
     public HeartbeatGenerator(Socket socket) {
         this.socket = socket;
@@ -74,8 +74,11 @@ public class HeartbeatGenerator extends AbstractExecutionThreadService {
                 out.print("");
                 out.flush();
                 Thread.sleep(getBeatDelay());
-                if((fromServer = in.readLine()) == null) throw new NoSocketException();
-                else if(!fromServer.contains("Client")) out.println(fromServer);
+                if ((fromServer = in.readLine()) == null) throw new NoSocketException();
+                else {
+                    out.println(fromServer);
+                    out.flush();
+                }
             }
 
 

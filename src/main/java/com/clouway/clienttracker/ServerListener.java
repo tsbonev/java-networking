@@ -28,7 +28,6 @@ public class ServerListener extends AbstractExecutionThreadService {
 
     }
 
-
     @Override
     protected void startUp() throws IOException {
         this.in = getReader(socket);
@@ -54,13 +53,15 @@ public class ServerListener extends AbstractExecutionThreadService {
                     new PrintWriter(new OutputStreamWriter(System.out));
             String fromServer;
 
-            while ((fromServer = in.readLine()) != null && !fromServer.equalsIgnoreCase("")) {
+            while ((fromServer = in.readLine()) != null) {
 
-                stdOut.println(fromServer);
-                stdOut.flush();
+                if (fromServer != "") {
+                    stdOut.println(fromServer);
+                    stdOut.flush();
+                }
             }
-
-
         }
+
+
     }
 }
