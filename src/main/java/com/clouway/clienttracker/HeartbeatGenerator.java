@@ -65,15 +65,6 @@ public class HeartbeatGenerator extends AbstractExecutionThreadService {
     }
 
     @Override
-    protected void triggerShutdown() {
-        try {
-            this.socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     protected void run() throws NoSocketException {
 
         try {

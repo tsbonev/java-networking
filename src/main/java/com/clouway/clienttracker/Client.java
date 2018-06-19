@@ -109,7 +109,6 @@ public class Client extends AbstractExecutionThreadService {
                 System.out.println("Stopping...");
                 shouldRun = false;
                 this.stopAsync();
-                return;
         }
     }
 
@@ -119,11 +118,10 @@ public class Client extends AbstractExecutionThreadService {
 
             listener.stopAsync().awaitTerminated();
             messenger.stopAsync().awaitTerminated();
-
-            socket.close();
             out.close();
             in.close();
             stdIn.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
