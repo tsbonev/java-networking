@@ -17,7 +17,7 @@ import java.util.concurrent.TimeoutException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 
-public class TrackingServerTest {
+public class NonTDDTrackingServerTest {
 
     ByteArrayOutputStream socketOut = new ByteArrayOutputStream();
     ByteArrayInputStream socketIn = new ByteArrayInputStream("signal".getBytes());
@@ -57,7 +57,7 @@ public class TrackingServerTest {
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
 
-    public TrackingServerTest() throws IOException {
+    public NonTDDTrackingServerTest() throws IOException {
     }
 
     @Before

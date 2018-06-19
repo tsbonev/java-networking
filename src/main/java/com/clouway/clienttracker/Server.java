@@ -94,7 +94,6 @@ public class Server extends AbstractExecutionThreadService {
             serverSocket.close();
             listener.stopAsync();
             shouldRun = false;
-            this.stopAsync();
         } catch (IOException e) {
             e.printStackTrace();
         }
