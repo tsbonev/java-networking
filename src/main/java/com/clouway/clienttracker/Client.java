@@ -13,7 +13,7 @@ public class Client extends AbstractExecutionThreadService {
     private int port;
     private String host;
     boolean shouldRun = true;
-    private HeartbeatGenerator generator;
+    protected HeartbeatGenerator generator;
     private ServerListener listener;
     private ClientMessenger messenger;
 
@@ -69,6 +69,40 @@ public class Client extends AbstractExecutionThreadService {
 
     }
 
+    /**
+     * Starts a new thread with a heartbeat generator.
+     *
+     * @param socket
+     */
+    protected void startGenerator(Socket socket) {
+        generator = new HeartbeatGenerator(socket);
+        generator.startAsync().awaitRunning();
+    }
+
+    /**
+     * Starts a new thread with a server listener.
+     *
+     * @param socket
+     */
+    protected void startListener(Socket socket) {
+
+        listener =  new ServerListener(socket);
+        listener.startAsync().awaitRunning();
+
+    }
+
+    /**
+     * Starts a new thread with a messenger.
+     *
+     * @param socket
+     */
+    protected void startMessenger(Socket socket) {
+
+        messenger = new ClientMessenger(socket);
+        messenger.startAsync().awaitRunning();
+
+    }
+
     @Override
     protected void startUp() throws IOException {
 
@@ -89,12 +123,9 @@ public class Client extends AbstractExecutionThreadService {
 
         try {
 
-            generator = new HeartbeatGenerator(this.socket);
-            generator.startAsync().awaitRunning();
-            listener = new ServerListener(this.socket);
-            listener.startAsync();
-            messenger = new ClientMessenger(this.socket);
-            messenger.startAsync().awaitRunning();
+            startGenerator(socket);
+            startListener(socket);
+            startMessenger(socket);
 
             while (shouldRun) {
 
