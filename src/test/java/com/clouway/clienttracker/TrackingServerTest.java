@@ -15,7 +15,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 
-public class NonTDDTrackingServerTest {
+public class TrackingServerTest {
 
     ByteArrayOutputStream socketOut = new ByteArrayOutputStream();
     ByteArrayInputStream socketIn = new ByteArrayInputStream("signal".getBytes());
@@ -55,7 +55,7 @@ public class NonTDDTrackingServerTest {
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
 
-    public NonTDDTrackingServerTest() throws IOException {
+    public TrackingServerTest() throws IOException {
     }
 
     @Before
@@ -82,11 +82,6 @@ public class NonTDDTrackingServerTest {
             }
 
             @Override
-            protected void setHeartbeatListener(Socket socket){
-                return;
-            }
-
-            @Override
             protected void setHandler(List<ClientHandler> list, Socket socket){
                 return;
             }
@@ -101,21 +96,6 @@ public class NonTDDTrackingServerTest {
         assertThat(outContent.toString().contains("New client has joined"), is(true));
 
         server.stopAsync();
-
-    }
-
-    @Test
-    public void heartbeatListenerShouldReceiveAndSendSignal() throws InterruptedException {
-
-        HeartbeatListener listener = new HeartbeatListener(socket);
-        listener.startAsync().awaitRunning();
-
-        Thread.sleep(1);
-
-        assertThat(listener.isRunning(), is(true));
-        assertThat(socketOut.toString(), is("signal\n"));
-
-        listener.stopAsync();
 
     }
 
@@ -179,11 +159,6 @@ public class NonTDDTrackingServerTest {
             @Override
             protected ServerSocket getSocket(int port){
                 return serverSocket;
-            }
-
-            @Override
-            protected void setHeartbeatListener(Socket socket){
-                return;
             }
 
             @Override

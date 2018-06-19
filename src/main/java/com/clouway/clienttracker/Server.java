@@ -16,7 +16,6 @@ public class Server extends AbstractExecutionThreadService {
     private boolean shouldRun = true;
     private ServerSocket serverSocket;
     private Socket clientSocket;
-    private HeartbeatListener listener;
 
 
     public Server() {
@@ -37,14 +36,6 @@ public class Server extends AbstractExecutionThreadService {
         ClientHandler handler = new ClientHandler(list, socket);
         clientList.add(handler);
         handler.startAsync().awaitRunning();
-
-    }
-
-    protected void setHeartbeatListener(Socket socket){
-
-        HeartbeatListener listener = new HeartbeatListener(socket);
-        listener.startAsync().awaitRunning();
-        this.listener = listener;
 
     }
 
