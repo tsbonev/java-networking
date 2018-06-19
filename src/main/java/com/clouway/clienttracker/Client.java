@@ -15,7 +15,7 @@ public class Client extends AbstractExecutionThreadService {
     boolean shouldRun = true;
     private HeartbeatGenerator generator;
     private ServerListener listener;
-    private ClientMessager messenger;
+    private ClientMessenger messenger;
 
     private Socket socket;
     private PrintWriter out;
@@ -93,7 +93,7 @@ public class Client extends AbstractExecutionThreadService {
             generator.startAsync().awaitRunning();
             listener = new ServerListener(this.socket);
             listener.startAsync();
-            messenger = new ClientMessager(this.socket);
+            messenger = new ClientMessenger(this.socket);
             messenger.startAsync().awaitRunning();
 
             while (shouldRun) {

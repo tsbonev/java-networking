@@ -84,8 +84,9 @@ public class HeartbeatListener extends AbstractExecutionThreadService {
                 while((fromClient = in.readLine()) != null) {
                     out.println(fromClient);
                     out.flush();
-                    Thread.sleep(getBeatDelay());
                 }
+                Thread.sleep(getBeatDelay());
+
             }
 
         }

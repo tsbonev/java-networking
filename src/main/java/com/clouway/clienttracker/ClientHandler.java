@@ -68,7 +68,7 @@ public class ClientHandler extends AbstractExecutionThreadService {
      *
      * @param text to be sent
      */
-    private void sendToClient(String text) {
+    private synchronized void sendToClient(String text) {
         out.println(text);
         out.flush();
     }

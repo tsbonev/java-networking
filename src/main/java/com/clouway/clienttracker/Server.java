@@ -67,7 +67,7 @@ public class Server extends AbstractExecutionThreadService {
             while (shouldRun) {
                 clientSocket = serverSocket.accept();
                 setHandler(this.clientList, this.clientSocket);
-                setHeartbeatListener(this.clientSocket);
+                //setHeartbeatListener(this.clientSocket);
 
                 System.out.println("New client has joined");
 
@@ -92,7 +92,7 @@ public class Server extends AbstractExecutionThreadService {
             }
             clientSocket.close();
             serverSocket.close();
-            listener.stopAsync();
+            //listener.stopAsync();
             shouldRun = false;
         } catch (IOException e) {
             e.printStackTrace();

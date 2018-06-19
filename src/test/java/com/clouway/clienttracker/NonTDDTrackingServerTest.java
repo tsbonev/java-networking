@@ -11,8 +11,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
@@ -118,32 +116,6 @@ public class NonTDDTrackingServerTest {
         assertThat(socketOut.toString(), is("signal\n"));
 
         listener.stopAsync();
-
-    }
-
-    @Test
-    public void heartbeatGeneratorShouldSendTickAndStop() throws InterruptedException, TimeoutException {
-
-        HeartbeatGenerator generator = new HeartbeatGenerator(socket){
-            @Override
-            protected int getBeatDelay(){
-                return 1;
-            }
-
-        };
-
-        generator.startAsync().awaitRunning();
-
-        Thread.sleep(1);
-
-        assertThat(socketOut.toString(), is("tick\n"));
-
-        generator.awaitTerminated(4, TimeUnit.MILLISECONDS);
-
-        assertThat(generator.isRunning(), is(false));
-        assertThat(errContent.toString().contains("NoSocketException"), is(true));
-
-        generator.stopAsync();
 
     }
 

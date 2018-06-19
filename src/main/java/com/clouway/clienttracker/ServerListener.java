@@ -35,7 +35,7 @@ public class ServerListener extends AbstractExecutionThreadService {
     }
 
     @Override
-    protected void triggerShutdown(){
+    protected void triggerShutdown() {
 
         try {
             socket.close();
@@ -49,19 +49,17 @@ public class ServerListener extends AbstractExecutionThreadService {
     @Override
     protected void run() throws IOException {
 
-        while (true)
-        {
-
+        while (true) {
             PrintWriter stdOut =
                     new PrintWriter(new OutputStreamWriter(System.out));
             String fromServer;
 
-            while ((fromServer = in.readLine()) != null && !fromServer.equalsIgnoreCase("")){
+            while ((fromServer = in.readLine()) != null && !fromServer.equalsIgnoreCase("")) {
 
                 stdOut.println(fromServer);
                 stdOut.flush();
-
             }
+
 
         }
     }

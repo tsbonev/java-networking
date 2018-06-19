@@ -8,12 +8,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ClientMessager extends AbstractExecutionThreadService {
+public class ClientMessenger extends AbstractExecutionThreadService {
 
     Socket socket;
     private PrintWriter out;
 
-    public ClientMessager(Socket socket) {
+    public ClientMessenger(Socket socket) {
         this.socket = socket;
     }
 
@@ -60,7 +60,7 @@ public class ClientMessager extends AbstractExecutionThreadService {
 
             String fromClient;
 
-            while ((fromClient = stdIn.readLine()) != null && !fromClient.equalsIgnoreCase("tick")){
+            while ((fromClient = stdIn.readLine()) != null){
 
                 out.println(fromClient);
                 out.flush();

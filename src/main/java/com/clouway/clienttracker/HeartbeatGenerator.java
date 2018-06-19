@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class HeartbeatGenerator extends AbstractExecutionThreadService{
+public class HeartbeatGenerator extends AbstractExecutionThreadService {
 
     private Socket socket;
     private PrintWriter out;
@@ -38,7 +38,7 @@ public class HeartbeatGenerator extends AbstractExecutionThreadService{
      *
      * @return
      */
-    protected int getBeatDelay(){
+    protected int getBeatDelay() {
         return this.beatDelay;
     }
 
@@ -65,7 +65,7 @@ public class HeartbeatGenerator extends AbstractExecutionThreadService{
     }
 
     @Override
-    protected void triggerShutdown(){
+    protected void triggerShutdown() {
         try {
             this.socket.close();
         } catch (IOException e) {
@@ -74,22 +74,20 @@ public class HeartbeatGenerator extends AbstractExecutionThreadService{
     }
 
     @Override
-    protected void run() {
+    protected void run() throws NoSocketException {
 
-        try{
+        try {
 
-            while (true){
+            while (true) {
+                String fromServer;
                 out.print("");
                 out.flush();
                 Thread.sleep(getBeatDelay());
-                String fromListener;
-                if((fromListener = in.readLine()) == null) throw new NoSocketException();
-                else out.println(fromListener);
-                out.flush();
+                if((fromServer = in.readLine()) == null) throw new NoSocketException();
+                else if(!fromServer.contains("Client")) out.println(fromServer);
             }
 
-        } catch (NoSocketException e){
-            e.printStackTrace();
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {
