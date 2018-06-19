@@ -12,15 +12,12 @@ public class Client extends AbstractExecutionThreadService {
 
     private int port;
     private String host;
-    boolean shouldRun = true;
-    protected HeartbeatGenerator generator;
-    private ServerListener listener;
+    private boolean shouldRun = true;
     private ClientMessenger messenger;
 
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
-    private BufferedReader stdIn;
 
     public Client(String host, int port) {
         this.port = port;
@@ -70,27 +67,6 @@ public class Client extends AbstractExecutionThreadService {
     }
 
     /**
-     * Starts a new thread with a heartbeat generator.
-     *
-     * @param socket
-     */
-    protected void startGenerator(Socket socket) {
-        generator = new HeartbeatGenerator(socket);
-        generator.startAsync().awaitRunning();
-    }
-
-    /**
-     * Starts a new thread with a server listener.
-     *
-     * @param socket
-     */
-    protected void startListener(Socket socket) {
-
-        listener =  new ServerListener(socket);
-        listener.startAsync().awaitRunning();
-    }
-
-    /**
      * Starts a new thread with a messenger.
      *
      * @param socket
@@ -108,7 +84,6 @@ public class Client extends AbstractExecutionThreadService {
         socket = getSocket(host, port);
         out = getWriter(socket);
         in = getReader(socket);
-        stdIn = new BufferedReader(new InputStreamReader(System.in));
 
     }
 
@@ -122,13 +97,15 @@ public class Client extends AbstractExecutionThreadService {
 
         try {
 
-            startGenerator(socket);
-            startListener(socket);
             startMessenger(socket);
 
             while (shouldRun) {
 
-                if(!generator.isRunning()){
+                String fromServer = in.readLine();
+
+                if(fromServer != null){
+                    System.out.println(fromServer);
+                }else {
                     throw new NoSocketException();
                 }
 
@@ -139,18 +116,17 @@ public class Client extends AbstractExecutionThreadService {
                 System.out.println("Stopping...");
                 shouldRun = false;
                 this.stopAsync();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     private void close() {
 
         try {
-
-            listener.stopAsync().awaitTerminated();
             messenger.stopAsync().awaitTerminated();
             out.close();
             in.close();
-            stdIn.close();
 
         } catch (IOException e) {
             e.printStackTrace();

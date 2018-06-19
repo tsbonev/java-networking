@@ -49,7 +49,7 @@ public class ClientMessenger extends AbstractExecutionThreadService {
     }
 
     @Override
-    protected void run() throws IOException {
+    protected void run() throws IOException{
 
         while (true)
         {
@@ -60,10 +60,8 @@ public class ClientMessenger extends AbstractExecutionThreadService {
             String fromClient;
 
             while ((fromClient = stdIn.readLine()) != null){
-
                 out.println(fromClient);
                 out.flush();
-
             }
 
         }

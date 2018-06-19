@@ -8,10 +8,6 @@ public class RunClient {
 
         client.startAsync();
 
-        while (client.isRunning()){
-
-        }
-
     }
 
 }

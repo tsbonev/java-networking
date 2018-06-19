@@ -96,7 +96,7 @@ public class TrackingServerTest {
         assertThat(server.isRunning(), is(true));
         assertThat(outContent.toString().contains("New client has joined"), is(true));
 
-        server.stopAsync();
+        server.stopAsync().awaitTerminated();
 
     }
 
@@ -180,7 +180,7 @@ public class TrackingServerTest {
 
         assertThat(handler.isRunning(), is(true));
 
-        server.stopAsync();
+        server.stopAsync().awaitTerminated();
 
         Thread.sleep(1);
 
@@ -190,16 +190,23 @@ public class TrackingServerTest {
     }
 
     @Test
-    public void clientShouldStopWithGenerator() throws InterruptedException {
+    public void clientShouldStopWithServer() throws InterruptedException {
 
-        HeartbeatGenerator hbGenerator = new HeartbeatGenerator(socket){
+        Server server = new Server(port){
 
             @Override
-            protected int getBeatDelay(){
-                return 100;
+            protected ServerSocket getSocket(int port){
+                return serverSocket;
+            }
+
+            @Override
+            protected void setHandler(List<ClientHandler> list, Socket socket){
+                return;
             }
 
         };
+
+        server.startAsync().awaitRunning();
 
         Client client = new Client(host, port){
 
@@ -213,25 +220,13 @@ public class TrackingServerTest {
                 return;
             }
 
-            @Override
-            protected void startListener(Socket socket){
-                return;
-            }
-
-            @Override
-            protected void startGenerator(Socket socket){
-                this.generator = hbGenerator;
-            }
-
         };
 
-        hbGenerator.startAsync().awaitRunning();
         client.startAsync().awaitRunning();
 
-        assertThat(hbGenerator.isRunning(), is(true));
         assertThat(client.isRunning(), is(true));
 
-        hbGenerator.stopAsync();
+        server.stopAsync().awaitTerminated();
 
         Thread.sleep(1);
 
@@ -240,5 +235,6 @@ public class TrackingServerTest {
         assertThat(client.isRunning(), is(false));
 
     }
+
 
 }

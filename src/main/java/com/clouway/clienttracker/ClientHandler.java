@@ -103,7 +103,7 @@ public class ClientHandler extends AbstractExecutionThreadService {
 
                 String fromClient;
 
-                while ((fromClient = in.readLine()) != null && !fromClient.equalsIgnoreCase("tick")) {
+                while ((fromClient = in.readLine()) != null) {
                     sendToAll(fromClient);
                 }
 
