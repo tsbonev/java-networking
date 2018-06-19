@@ -14,6 +14,7 @@ public class Server extends AbstractExecutionThreadService {
     private ServerSocket serverSocket;
     protected List<ClientThread> clientThreadList;
     private ClientThread cThread;
+    private Socket clientSocket;
 
     public Server() {
         this.clientThreadList = new ArrayList<>();
@@ -57,6 +58,7 @@ public class Server extends AbstractExecutionThreadService {
         }
 
         try {
+            clientSocket.close();
             serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -70,8 +72,8 @@ public class Server extends AbstractExecutionThreadService {
 
         while (true) {
 
-            Socket socket = serverSocket.accept();
-            startClientThread(socket, clientThreadList);
+            clientSocket = serverSocket.accept();
+            startClientThread(clientSocket, clientThreadList);
             System.out.println("Client connected");
 
         }

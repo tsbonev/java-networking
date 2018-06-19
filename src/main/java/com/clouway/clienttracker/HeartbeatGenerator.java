@@ -79,10 +79,13 @@ public class HeartbeatGenerator extends AbstractExecutionThreadService{
         try{
 
             while (true){
-                out.println("tick");
+                out.print("");
                 out.flush();
                 Thread.sleep(getBeatDelay());
-                if(in.readLine() == null) throw new NoSocketException();
+                String fromListener;
+                if((fromListener = in.readLine()) == null) throw new NoSocketException();
+                else out.println(fromListener);
+                out.flush();
             }
 
         } catch (NoSocketException e){

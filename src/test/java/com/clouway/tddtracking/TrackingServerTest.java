@@ -119,6 +119,7 @@ public class TrackingServerTest {
 
         List<ClientThread> threadList = new ArrayList<>();
         ClientThread cThread = new ClientThread(socket, threadList);
+        cThread.startAsync().awaitRunning();
 
         Server server = new Server(port) {
             @Override
@@ -129,7 +130,6 @@ public class TrackingServerTest {
             @Override
             protected void startClientThread(Socket socket, List<ClientThread> list) {
                 this.clientThreadList = threadList;
-                cThread.startAsync().awaitRunning();
             }
         };
 

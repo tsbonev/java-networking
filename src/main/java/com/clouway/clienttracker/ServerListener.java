@@ -56,7 +56,7 @@ public class ServerListener extends AbstractExecutionThreadService {
                     new PrintWriter(new OutputStreamWriter(System.out));
             String fromServer;
 
-            while ((fromServer = in.readLine()) != null && !fromServer.equalsIgnoreCase("tick")){
+            while ((fromServer = in.readLine()) != null && !fromServer.equalsIgnoreCase("")){
 
                 stdOut.println(fromServer);
                 stdOut.flush();

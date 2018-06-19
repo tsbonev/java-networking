@@ -112,7 +112,7 @@ public class NonTDDTrackingServerTest {
         HeartbeatListener listener = new HeartbeatListener(socket);
         listener.startAsync().awaitRunning();
 
-        Thread.currentThread().sleep(1);
+        Thread.sleep(1);
 
         assertThat(listener.isRunning(), is(true));
         assertThat(socketOut.toString(), is("signal\n"));
@@ -138,7 +138,7 @@ public class NonTDDTrackingServerTest {
 
         assertThat(socketOut.toString(), is("tick\n"));
 
-        generator.awaitTerminated(2, TimeUnit.MILLISECONDS);
+        generator.awaitTerminated(4, TimeUnit.MILLISECONDS);
 
         assertThat(generator.isRunning(), is(false));
         assertThat(errContent.toString().contains("NoSocketException"), is(true));
@@ -229,6 +229,8 @@ public class NonTDDTrackingServerTest {
         assertThat(handler.isRunning(), is(true));
 
         server.stopAsync();
+
+        Thread.sleep(1);
 
         assertThat(server.isRunning(), is(false));
         assertThat(handler.isRunning(), is(false));
